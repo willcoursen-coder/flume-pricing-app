@@ -57,12 +57,7 @@ export function FormattedNumberInput({
     // Allow typing numbers, decimals, and commas
     const newValue = e.target.value.replace(/[^\d.-]/g, '');
     setDisplayValue(newValue);
-
-    // Update value in real-time while typing (not just on blur)
-    const numValue = parseFloat(newValue) || 0;
-    if (!isNaN(numValue)) {
-      onChange(numValue);
-    }
+    // Note: onChange is called on blur, not while typing
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

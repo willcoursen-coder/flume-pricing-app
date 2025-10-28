@@ -48,9 +48,9 @@ export function DomainVolumes() {
           </tr>
         </thead>
         <tbody>
-          {domainRows.map((row, index) => (
+          {domainRows.map((row) => (
             <tr
-              key={index}
+              key={row.domain}
               className="border-b border-gray-100 hover:bg-gray-50"
             >
               <td className="py-2 px-3 text-gray-900 font-medium">

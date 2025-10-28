@@ -54,7 +54,7 @@ export function PricingSummary() {
               Monthly Rows
             </div>
             <div className="text-xl font-semibold text-gray-900">
-              {formatNumber(results.monthlyRows / 1000000)}M
+              {(results.monthlyRows / 1000000).toFixed(0)}M
             </div>
             <div className="text-xs text-gray-500 mt-1">After CDC</div>
           </div>
