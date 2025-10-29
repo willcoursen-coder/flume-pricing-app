@@ -284,10 +284,22 @@ export const defaultInputs: import('./types').PricingInputs = {
   mediumTrades: 8,
   largeTrades: 3,
   dbReplication: 0,
-  hasDiscovery: true,
-  discoveryType: 'standard',
-  discoveryHours: 200,
   automationEnabled: false,
+
+  // Trade Hours (adjustable)
+  smallTradeHours: 40,
+  mediumTradeHours: 120,
+  largeTradeHours: 240,
+  dbReplicationHours: 80,
+
+  // Resourcing
+  fteCount: 2,
+
+  // Strategic Deployment Setup + Discovery
+  hasDiscovery: false,
+  discoveryHours: 200,
+  discoveryLoadedCostPerHour: 95,
+  discoveryMargin: 40,
 
   // Custom Trade Pricing
   smallTradeCost: 3800,
@@ -298,12 +310,20 @@ export const defaultInputs: import('./types').PricingInputs = {
   cdcTimeline: 0,
   cdcCoverage: 0,
   hasPremiumSLA: false,
+  platformLicense: 85000,
+
+  // Storage (optional)
+  hasStorage: false,
+  storageCost: 25000, // Annual internal storage cost
+  storageMargin: 40, // 40% margin on storage
 
   // Margins
   implMargin: 40,
   platformCostPct: 30,
   dataCostPct: 25,
+  dataMarginPct: 0,
   supportCostPct: 15,
+  supportMarginPct: 0,
 
   // Advanced
   loadedCostPerHour: 150,

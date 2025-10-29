@@ -22,54 +22,39 @@ export function EffortBreakdown() {
   // Hours per FTE week (standard 40 hour work week)
   const hoursPerWeek = 40;
 
-  // Calculate discovery hours based on type
-  const getDiscoveryHours = () => {
-    if (inputs.discoveryType === 'standard') return 200;
-    if (inputs.discoveryType === 'strategic') return 400;
-    if (inputs.discoveryType === 'custom') return inputs.discoveryHours;
-    return 0;
-  };
-
-  const getDiscoveryDescription = () => {
-    if (inputs.discoveryType === 'standard') return 'Standard data profiling, mapping workshops, architecture design';
-    if (inputs.discoveryType === 'strategic') return 'Strategic deployment, deep technical design, change management';
-    if (inputs.discoveryType === 'custom') return `Custom deployment engagement (${inputs.discoveryHours} hours)`;
-    return '';
-  };
-
   const efforts = [
     {
-      component: inputs.discoveryType === 'strategic' ? 'Strategic Deployment' : inputs.discoveryType === 'standard' ? 'Standard Deployment' : 'Custom Deployment',
-      count: inputs.discoveryType !== 'none' ? 1 : 0,
-      hoursEach: getDiscoveryHours(),
-      description: getDiscoveryDescription(),
-      isOptional: true,
+      component: 'Strategic Deployment Setup + Discovery',
+      count: inputs.discoveryHours > 0 ? 1 : 0,
+      hoursEach: inputs.discoveryHours,
+      description: 'Strategic consulting, data profiling, architecture design, and change management',
+      isOptional: false,
     },
     {
-      component: 'Small Trades (40 hrs)',
+      component: `Small Trades (${inputs.smallTradeHours} hrs)`,
       count: inputs.smallTrades,
-      hoursEach: 40,
+      hoursEach: inputs.smallTradeHours,
       description: 'Standard 834/835 flat files, simple CSV imports',
       isOptional: false,
     },
     {
-      component: 'Medium Trades (120 hrs)',
+      component: `Medium Trades (${inputs.mediumTradeHours} hrs)`,
       count: inputs.mediumTrades,
-      hoursEach: 120,
+      hoursEach: inputs.mediumTradeHours,
       description: '837 with custom fields, HL7 messages, complex mapping',
       isOptional: false,
     },
     {
-      component: 'Large Trades (240 hrs)',
+      component: `Large Trades (${inputs.largeTradeHours} hrs)`,
       count: inputs.largeTrades,
-      hoursEach: 240,
+      hoursEach: inputs.largeTradeHours,
       description: 'REST/SOAP APIs, real-time integrations, custom transforms',
       isOptional: false,
     },
     {
-      component: 'Database Replication',
+      component: `Database Replication (${inputs.dbReplicationHours} hrs)`,
       count: inputs.dbReplication,
-      hoursEach: 80,
+      hoursEach: inputs.dbReplicationHours,
       description: 'Legacy system data migration and replication',
       isOptional: false,
     },
@@ -230,15 +215,15 @@ export function EffortBreakdown() {
               Assumed Team Size
             </td>
             <td className="py-2 px-3 text-right text-gray-900" colSpan={2}>
-              2 FTEs (parallel work)
+              {inputs.fteCount} FTEs (parallel work)
             </td>
           </tr>
           <tr className="border-b border-gray-100 hover:bg-gray-50">
             <td className="py-2 px-3 text-gray-900" colSpan={4}>
-              Calendar Weeks (with 2 FTEs)
+              Calendar Weeks (with {inputs.fteCount} FTEs)
             </td>
             <td className="py-2 px-3 text-right text-blue-600 font-semibold" colSpan={2}>
-              {formatHours(totalWeeks / 2)} weeks
+              {formatHours(totalWeeks / inputs.fteCount)} weeks
             </td>
           </tr>
           <tr className="border-b border-gray-100 hover:bg-gray-50">
@@ -246,12 +231,12 @@ export function EffortBreakdown() {
               Calendar Months (approx)
             </td>
             <td className="py-2 px-3 text-right text-blue-600 font-semibold" colSpan={2}>
-              {formatHours((totalWeeks / 2) / 4.33)} months
+              {formatHours((totalWeeks / inputs.fteCount) / 4.33)} months
             </td>
           </tr>
           <tr className="border-b border-gray-200 hover:bg-gray-50 bg-yellow-50">
             <td className="py-2 px-3 text-gray-600 text-xs" colSpan={6}>
-              <strong>Note:</strong> Timeline assumes 2 FTEs working in parallel. Actual timeline
+              <strong>Note:</strong> Timeline assumes {inputs.fteCount} FTEs working in parallel. Actual timeline
               may vary based on dependencies, customer availability, and resource allocation.
             </td>
           </tr>

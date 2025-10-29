@@ -4,7 +4,7 @@ import { usePricingStore } from '@/lib/store';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/Card';
 
 export function Settings() {
-  const { inputs, updateInput, toggleMargins, toggleAdvanced } = usePricingStore();
+  const { inputs, updateInput } = usePricingStore();
 
   return (
     <Card>
@@ -72,20 +72,6 @@ export function Settings() {
             Premium SLA
           </button>
         </div>
-
-        <button
-          onClick={toggleMargins}
-          className="w-full mt-2 px-3 py-2 bg-gray-500 text-white text-xs font-medium rounded-md hover:bg-gray-600 transition-colors"
-        >
-          ⚙️ Margins
-        </button>
-
-        <button
-          onClick={toggleAdvanced}
-          className="w-full px-3 py-2 bg-gray-500 text-white text-xs font-medium rounded-md hover:bg-gray-600 transition-colors"
-        >
-          🔧 Advanced Mode
-        </button>
       </CardContent>
     </Card>
   );

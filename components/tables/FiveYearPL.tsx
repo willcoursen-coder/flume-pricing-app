@@ -72,15 +72,51 @@ export function FiveYearPL() {
             ))}
             <td className="py-2 px-3 text-gray-500">-</td>
           </tr>
-          <tr className="border-b border-gray-100 hover:bg-gray-50">
-            <td className="py-2 px-3 text-gray-900">Employers</td>
-            {results.yearlyFinancials.map((year) => (
-              <td key={year.year} className="py-2 px-3 text-gray-900">
-                {formatNumber(year.employers)}
-              </td>
-            ))}
-            <td className="py-2 px-3 text-gray-500">-</td>
-          </tr>
+          {inputs.orgType === 'tpa' ? (
+            <tr className="border-b border-gray-100 hover:bg-gray-50">
+              <td className="py-2 px-3 text-gray-900">Employees (Subscribers)</td>
+              {results.yearlyFinancials.map((year) => (
+                <td key={year.year} className="py-2 px-3 text-gray-900">
+                  {formatNumber(year.employees)}
+                </td>
+              ))}
+              <td className="py-2 px-3 text-gray-500">-</td>
+            </tr>
+          ) : (
+            <tr className="border-b border-gray-100 hover:bg-gray-50">
+              <td className="py-2 px-3 text-gray-900">Employers</td>
+              {results.yearlyFinancials.map((year) => (
+                <td key={year.year} className="py-2 px-3 text-gray-900">
+                  {formatNumber(year.employers)}
+                </td>
+              ))}
+              <td className="py-2 px-3 text-gray-500">-</td>
+            </tr>
+          )}
+
+          {/* Unit Economics - Client-facing metric */}
+          {inputs.orgType === 'tpa' && (
+            <tr className="border-b border-gray-200 hover:bg-gray-50">
+              <td className="py-2 px-3 text-blue-600 font-semibold">Cost PEPM (to Client)</td>
+              {results.yearlyFinancials.map((year) => (
+                <td key={year.year} className="py-2 px-3 text-blue-600 font-semibold">
+                  ${year.revenuePEPM.toFixed(2)}
+                </td>
+              ))}
+              <td className="py-2 px-3 text-gray-500">-</td>
+            </tr>
+          )}
+          {inputs.orgType === 'payer' && (
+            <tr className="border-b border-gray-200 hover:bg-gray-50">
+              <td className="py-2 px-3 text-blue-600 font-semibold">Cost PMPM (to Client)</td>
+              {results.yearlyFinancials.map((year) => (
+                <td key={year.year} className="py-2 px-3 text-blue-600 font-semibold">
+                  ${year.revenuePMPM.toFixed(4)}
+                </td>
+              ))}
+              <td className="py-2 px-3 text-gray-500">-</td>
+            </tr>
+          )}
 
           {/* REVENUE Section */}
           <tr className="bg-gray-100">
@@ -207,88 +243,6 @@ export function FiveYearPL() {
               {total5YMargin.toFixed(1)}%
             </td>
           </tr>
-
-          {/* PEPM Section - Only for TPA */}
-          {inputs.orgType === 'tpa' && (
-            <>
-              <tr className="bg-gray-100">
-                <td
-                  colSpan={7}
-                  className="py-2 px-3 font-semibold text-gray-700 text-xs pt-4"
-                >
-                  PEPM METRICS (PER EMPLOYER PER MONTH)
-                </td>
-              </tr>
-              <tr className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="py-2 px-3 text-gray-900">Revenue PEPM</td>
-                {results.yearlyFinancials.map((year) => (
-                  <td key={year.year} className="py-2 px-3 text-gray-900">
-                    ${year.revenuePEPM.toFixed(2)}
-                  </td>
-                ))}
-                <td className="py-2 px-3 text-gray-500">-</td>
-              </tr>
-              <tr className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="py-2 px-3 text-gray-900">Cost PEPM</td>
-                {results.yearlyFinancials.map((year) => (
-                  <td key={year.year} className="py-2 px-3 text-gray-900">
-                    ${year.costPEPM.toFixed(2)}
-                  </td>
-                ))}
-                <td className="py-2 px-3 text-gray-500">-</td>
-              </tr>
-              <tr className="border-b border-gray-200 hover:bg-gray-50">
-                <td className="py-2 px-3 text-green-600 font-semibold">Profit PEPM</td>
-                {results.yearlyFinancials.map((year) => (
-                  <td key={year.year} className="py-2 px-3 text-green-600 font-semibold">
-                    ${year.profitPEPM.toFixed(2)}
-                  </td>
-                ))}
-                <td className="py-2 px-3 text-gray-500">-</td>
-              </tr>
-            </>
-          )}
-
-          {/* PMPM Section - Only for Payer */}
-          {inputs.orgType === 'payer' && (
-            <>
-              <tr className="bg-gray-100">
-                <td
-                  colSpan={7}
-                  className="py-2 px-3 font-semibold text-gray-700 text-xs pt-4"
-                >
-                  PMPM METRICS - DATA CONSUMPTION ONLY
-                </td>
-              </tr>
-              <tr className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="py-2 px-3 text-gray-900">Data Volume (M rows)</td>
-                {results.yearlyFinancials.map((year) => (
-                  <td key={year.year} className="py-2 px-3 text-gray-900">
-                    {formatNumber(year.monthlyRows / 1000000)}
-                  </td>
-                ))}
-                <td className="py-2 px-3 text-gray-500">-</td>
-              </tr>
-              <tr className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="py-2 px-3 text-gray-900">Data Revenue PMPM</td>
-                {results.yearlyFinancials.map((year) => (
-                  <td key={year.year} className="py-2 px-3 text-gray-900">
-                    ${year.revenuePMPM.toFixed(4)}
-                  </td>
-                ))}
-                <td className="py-2 px-3 text-gray-500">-</td>
-              </tr>
-              <tr className="border-b border-gray-200 hover:bg-gray-50">
-                <td className="py-2 px-3 text-gray-900">Data Cost PMPM (Internal)</td>
-                {results.yearlyFinancials.map((year) => (
-                  <td key={year.year} className="py-2 px-3 text-gray-900">
-                    ${year.dataCostPMPM.toFixed(4)}
-                  </td>
-                ))}
-                <td className="py-2 px-3 text-gray-500">-</td>
-              </tr>
-            </>
-          )}
 
           {/* CUMULATIVE Section */}
           <tr className="bg-gray-100">

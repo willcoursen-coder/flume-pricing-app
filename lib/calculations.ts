@@ -138,53 +138,43 @@ export function calculateMonthlyRows(
 export function calculateImplementationCost(
   inputs: PricingInputs
 ): ImplementationCost {
-  // Use custom trade costs
-  const tradeCosts =
-    inputs.smallTrades * inputs.smallTradeCost +
-    inputs.mediumTrades * inputs.mediumTradeCost +
-    inputs.largeTrades * inputs.largeTradeCost;
-
-  const dbReplicationCost = inputs.dbReplication * 45000;
-
-  // Calculate discovery cost based on type
-  let discoveryCost = 0;
-  let discoveryHours = 0;
-
-  if (inputs.discoveryType === 'standard') {
-    discoveryHours = 200;
-    discoveryCost = 85000;
-  } else if (inputs.discoveryType === 'strategic') {
-    discoveryHours = 400;
-    discoveryCost = 170000;
-  } else if (inputs.discoveryType === 'custom') {
-    discoveryHours = inputs.discoveryHours;
-    // Calculate cost based on hours at loaded rate with standard margin
-    const internalCost = discoveryHours * inputs.loadedCostPerHour;
-    discoveryCost = internalCost * (1 + inputs.implMargin / 100);
-  }
-
-  const totalRevenue = tradeCosts + dbReplicationCost + discoveryCost;
-
-  // Calculate base hours
+  // Calculate base hours for trades and DB replication (NO discovery hours here)
   const baseHours =
-    inputs.smallTrades * 40 +
-    inputs.mediumTrades * 120 +
-    inputs.largeTrades * 240 +
-    inputs.dbReplication * 80 +
-    discoveryHours;
+    inputs.smallTrades * inputs.smallTradeHours +
+    inputs.mediumTrades * inputs.mediumTradeHours +
+    inputs.largeTrades * inputs.largeTradeHours +
+    inputs.dbReplication * inputs.dbReplicationHours;
 
   // Apply automation reduction (50% if enabled)
   const automationMultiplier = inputs.automationEnabled ? 0.5 : 1.0;
   const totalHours = baseHours * automationMultiplier;
 
+  // Calculate internal cost for implementation (Cost)
   const totalCost = totalHours * inputs.loadedCostPerHour;
-  const margin = totalRevenue - totalCost;
+
+  // Calculate margin in dollars for implementation (Margin)
+  const margin = totalCost * (inputs.implMargin / 100);
+
+  // Calculate customer price for implementation (Price = Cost + Margin)
+  const totalRevenue = totalCost + margin;
+
+  // Discovery is calculated separately (only if hours > 0)
+  let discoveryCost = 0;
+  if (inputs.discoveryHours > 0) {
+    const discoveryInternalCost = inputs.discoveryHours * inputs.discoveryLoadedCostPerHour;
+    const discoveryMarginAmount = discoveryInternalCost * (inputs.discoveryMargin / 100);
+    discoveryCost = discoveryInternalCost + discoveryMarginAmount;
+  }
+
+  // Legacy fields for compatibility
+  const tradeCosts = 0;
+  const dbReplicationCost = 0;
 
   return {
     tradeCosts,
     dbReplicationCost,
     discoveryCost,
-    totalRevenue,
+    totalRevenue: totalRevenue + discoveryCost, // Total includes discovery
     totalHours,
     totalCost,
     margin,
@@ -208,17 +198,27 @@ export function calculateYearlyFinancials(
   const yearEmployers = Math.round(inputs.employers * volumeGrowth);
   const yearProviders = Math.round(inputs.providers * volumeGrowth);
 
+  // For TPAs: Employees (subscribers) = Members / 1.8
+  const yearEmployees = inputs.orgType === 'tpa'
+    ? Math.round(yearMembers / 1.8)
+    : yearMembers;
+
   // Calculate monthly rows for this year
   const yearMonthlyRows = calculateMonthlyRows(inputs, volumeGrowth);
   const annualDataCost = (yearMonthlyRows * 12 / 1000000) * inputs.dataCostPer1M;
 
   // Platform costs
-  const platformLicense = 85000;
+  const platformLicense = inputs.platformLicense;
   const premiumSLA = inputs.hasPremiumSLA ? 50000 : 0;
+
+  // Storage (optional)
+  const storagePrice = inputs.hasStorage
+    ? inputs.storageCost + (inputs.storageCost * inputs.storageMargin / 100)
+    : 0;
 
   // Revenue
   const implRevenue = year === 1 ? implementation.totalRevenue : 0;
-  const ongoingRevenue = platformLicense + premiumSLA + annualDataCost;
+  const ongoingRevenue = platformLicense + premiumSLA + annualDataCost + storagePrice;
   const totalRevenue = implRevenue + ongoingRevenue;
 
   // Costs
@@ -232,14 +232,26 @@ export function calculateYearlyFinancials(
   const grossProfit = totalRevenue - totalCost;
   const grossMargin = (grossProfit / totalRevenue) * 100;
 
-  // Unit Economics
-  const revenuePEPM = totalRevenue / yearEmployers / 12;
-  const costPEPM = totalCost / yearEmployers / 12;
+  // Unit Economics - org type specific
+  // TPAs: PEPM (Per Employee Per Month) - using subscribers/employees
+  // Payers: PMPM (Per Member Per Month) - using members
+  const revenuePEPM = inputs.orgType === 'tpa'
+    ? totalRevenue / yearEmployees / 12
+    : 0;
+  const costPEPM = inputs.orgType === 'tpa'
+    ? totalCost / yearEmployees / 12
+    : 0;
   const profitPEPM = revenuePEPM - costPEPM;
 
-  const revenuePMPM = totalRevenue / yearMembers / 12;
-  const costPMPM = totalCost / yearMembers / 12;
-  const dataCostPMPM = annualDataCost / yearMembers / 12;
+  const revenuePMPM = inputs.orgType === 'payer'
+    ? totalRevenue / yearMembers / 12
+    : 0;
+  const costPMPM = inputs.orgType === 'payer'
+    ? totalCost / yearMembers / 12
+    : 0;
+  const dataCostPMPM = inputs.orgType === 'payer'
+    ? annualDataCost / yearMembers / 12
+    : 0;
 
   // Update cumulative
   const newCumulativeRevenue = cumulativeRevenue + totalRevenue;
@@ -248,6 +260,7 @@ export function calculateYearlyFinancials(
   return {
     year,
     members: yearMembers,
+    employees: yearEmployees,
     employers: yearEmployers,
     providers: yearProviders,
     implRevenue,
@@ -281,9 +294,15 @@ export function calculatePricing(inputs: PricingInputs): PricingResults {
   // Year 1 calculations
   const monthlyRows = calculateMonthlyRows(inputs);
   const annualDataCost = (monthlyRows * 12 / 1000000) * inputs.dataCostPer1M;
-  const platformLicense = 85000;
+  const platformLicense = inputs.platformLicense;
   const premiumSLA = inputs.hasPremiumSLA ? 50000 : 0;
-  const totalOpex = platformLicense + premiumSLA + annualDataCost;
+
+  // Storage (optional)
+  const storagePrice = inputs.hasStorage
+    ? inputs.storageCost + (inputs.storageCost * inputs.storageMargin / 100)
+    : 0;
+
+  const totalOpex = platformLicense + premiumSLA + annualDataCost + storagePrice;
 
   const year1Total = implementation.totalRevenue + totalOpex;
 

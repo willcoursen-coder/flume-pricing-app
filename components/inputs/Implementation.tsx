@@ -50,7 +50,7 @@ export function Implementation() {
             type="number"
             value={inputs.smallTrades}
             onChange={(e) => updateInput('smallTrades', parseInt(e.target.value) || 0)}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
           <p className="text-xs text-gray-500 mt-1">
             Standard 834, 835 flat files, simple CSV imports
@@ -65,7 +65,7 @@ export function Implementation() {
             type="number"
             value={inputs.mediumTrades}
             onChange={(e) => updateInput('mediumTrades', parseInt(e.target.value) || 0)}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
           <p className="text-xs text-gray-500 mt-1">
             837 with custom fields, HL7 messages, complex mapping
@@ -80,7 +80,7 @@ export function Implementation() {
             type="number"
             value={inputs.largeTrades}
             onChange={(e) => updateInput('largeTrades', parseInt(e.target.value) || 0)}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
           <p className="text-xs text-gray-500 mt-1">
             REST/SOAP APIs, real-time integrations, custom transforms
@@ -95,7 +95,7 @@ export function Implementation() {
             type="number"
             value={inputs.dbReplication}
             onChange={(e) => updateInput('dbReplication', parseInt(e.target.value) || 0)}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
         </div>
 
@@ -112,7 +112,7 @@ export function Implementation() {
               // Sync hasDiscovery for backward compatibility
               updateInput('hasDiscovery', newType !== 'none');
             }}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           >
             <option value="none">None</option>
             <option value="standard">Standard Deployment (200 hrs - $85K)</option>
@@ -131,7 +131,7 @@ export function Implementation() {
               type="number"
               value={inputs.discoveryHours}
               onChange={(e) => updateInput('discoveryHours', parseInt(e.target.value) || 0)}
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               placeholder="Enter hours"
             />
             <p className="text-xs text-gray-500 mt-1">

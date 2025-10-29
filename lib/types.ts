@@ -44,10 +44,22 @@ export interface PricingInputs {
   mediumTrades: number;
   largeTrades: number;
   dbReplication: number;
-  hasDiscovery: boolean;
-  discoveryType: 'none' | 'standard' | 'strategic' | 'custom';
-  discoveryHours: number; // For custom discovery
   automationEnabled: boolean; // Reduces implementation hours by 50%
+
+  // Trade Hours (adjustable)
+  smallTradeHours: number;
+  mediumTradeHours: number;
+  largeTradeHours: number;
+  dbReplicationHours: number;
+
+  // Resourcing
+  fteCount: number; // Number of FTEs working in parallel
+
+  // Strategic Deployment Setup + Discovery (optional add-on)
+  hasDiscovery: boolean;
+  discoveryHours: number;
+  discoveryLoadedCostPerHour: number;
+  discoveryMargin: number; // Margin % for discovery
 
   // Custom Trade Pricing
   smallTradeCost: number;
@@ -58,12 +70,20 @@ export interface PricingInputs {
   cdcTimeline: number;
   cdcCoverage: number;
   hasPremiumSLA: boolean;
+  platformLicense: number; // Annual platform license cost
+
+  // Storage (optional)
+  hasStorage: boolean;
+  storageCost: number; // Annual internal storage cost
+  storageMargin: number; // Margin % for storage
 
   // Margins (Internal)
   implMargin: number;
   platformCostPct: number;
   dataCostPct: number;
+  dataMarginPct: number; // Margin % for data infrastructure
   supportCostPct: number;
+  supportMarginPct: number; // Margin % for support services
 
   // Advanced
   loadedCostPerHour: number;
@@ -96,6 +116,7 @@ export interface ImplementationCost {
 export interface YearlyFinancials {
   year: number;
   members: number;
+  employees: number; // For TPAs: subscribers (members / 1.8)
   employers: number;
   providers: number;
 
