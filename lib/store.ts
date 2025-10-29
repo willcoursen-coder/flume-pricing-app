@@ -29,6 +29,13 @@ export const usePricingStore = create<PricingStore>((set) => ({
   updateInput: (key, value) =>
     set((state) => {
       const newInputs = { ...state.inputs, [key]: value };
+
+      // Auto-calculate volumes when Member Lives changes
+      if (key === 'memberLives') {
+        newInputs.claimsVolume = value * 10; // 10 claims per member per year
+        newInputs.rxVolume = value * 20; // 20 Rx fills per member per year
+      }
+
       return {
         inputs: newInputs,
         results: calculatePricing(newInputs),

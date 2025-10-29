@@ -299,7 +299,7 @@ export const defaultInputs: import('./types').PricingInputs = {
 
   // Advanced
   loadedCostPerHour: 150,
-  dataCostPer1M: 47000,
+  dataCostPer1M: 47, // $47 per 1M rows (blended rate)
   globalRowMultiplier: 1.0,
   pipelineMultiplier: 4.0, // Standard: Raw → Bronze → Silver → Gold
 };
