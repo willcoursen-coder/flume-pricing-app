@@ -25,9 +25,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">F</span>
-              </div>
+              <img
+                src="/flume-icon.svg"
+                alt="Flume Health"
+                className="w-8 h-8"
+              />
               <h1 className="text-lg font-semibold text-gray-900">
                 Flume Health Pricing Model
               </h1>
