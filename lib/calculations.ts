@@ -147,12 +147,17 @@ export function calculateImplementationCost(
   const discoveryCost = inputs.hasDiscovery ? 85000 : 0;
   const totalRevenue = tradeCosts + dbReplicationCost + discoveryCost;
 
-  const totalHours =
+  // Calculate base hours
+  const baseHours =
     inputs.smallTrades * 40 +
     inputs.mediumTrades * 120 +
     inputs.largeTrades * 240 +
     inputs.dbReplication * 80 +
     (inputs.hasDiscovery ? 200 : 0);
+
+  // Apply automation reduction (50% if enabled)
+  const automationMultiplier = inputs.automationEnabled ? 0.5 : 1.0;
+  const totalHours = baseHours * automationMultiplier;
 
   const totalCost = totalHours * inputs.loadedCostPerHour;
   const margin = totalRevenue - totalCost;

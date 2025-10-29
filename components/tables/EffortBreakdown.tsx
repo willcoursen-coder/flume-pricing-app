@@ -60,7 +60,9 @@ export function EffortBreakdown() {
     },
   ];
 
-  const totalHours = efforts.reduce((sum, e) => sum + e.count * e.hoursEach, 0);
+  const baseHours = efforts.reduce((sum, e) => sum + e.count * e.hoursEach, 0);
+  const automationMultiplier = inputs.automationEnabled ? 0.5 : 1.0;
+  const totalHours = baseHours * automationMultiplier;
   const totalWeeks = totalHours / hoursPerWeek;
   const totalCost = totalHours * inputs.loadedCostPerHour;
 
@@ -129,10 +131,25 @@ export function EffortBreakdown() {
             );
           })}
 
+          {/* Automation row if enabled */}
+          {inputs.automationEnabled && (
+            <tr className="bg-green-50 border-t-2 border-green-200">
+              <td className="py-2 px-3 text-green-900 font-medium" colSpan={4}>
+                AI Automation (50% reduction)
+              </td>
+              <td className="py-2 px-3 text-right text-green-600 font-semibold">
+                -{formatNumber(baseHours * 0.5)} hrs
+              </td>
+              <td className="py-2 px-3 text-right text-green-600 font-semibold">
+                -{formatHours((baseHours * 0.5) / hoursPerWeek)} weeks
+              </td>
+            </tr>
+          )}
+
           {/* Totals row */}
           <tr className="border-t-2 border-gray-300 bg-gray-50 font-semibold">
             <td className="py-2 px-3 text-gray-900" colSpan={4}>
-              Total Implementation Effort
+              {inputs.automationEnabled ? 'Total with Automation' : 'Total Implementation Effort'}
             </td>
             <td className="py-2 px-3 text-right text-blue-600 font-bold">
               {formatNumber(totalHours)} hrs

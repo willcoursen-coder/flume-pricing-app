@@ -8,6 +8,7 @@ interface PricingStore {
   results: PricingResults;
   showMargins: boolean;
   showAdvanced: boolean;
+  currentStep: number; // Wizard step (1-5)
 
   // Actions
   updateInput: <K extends keyof PricingInputs>(
@@ -18,6 +19,9 @@ interface PricingStore {
   toggleMargins: () => void;
   toggleAdvanced: () => void;
   resetInputs: () => void;
+  setStep: (step: number) => void;
+  nextStep: () => void;
+  prevStep: () => void;
 }
 
 export const usePricingStore = create<PricingStore>((set) => ({
@@ -25,6 +29,7 @@ export const usePricingStore = create<PricingStore>((set) => ({
   results: calculatePricing(defaultInputs),
   showMargins: false,
   showAdvanced: false,
+  currentStep: 1,
 
   updateInput: (key, value) =>
     set((state) => {
@@ -60,4 +65,14 @@ export const usePricingStore = create<PricingStore>((set) => ({
       inputs: defaultInputs,
       results: calculatePricing(defaultInputs),
     }),
+
+  setStep: (step) => set({ currentStep: step }),
+
+  nextStep: () => set((state) => ({
+    currentStep: Math.min(state.currentStep + 1, 5)
+  })),
+
+  prevStep: () => set((state) => ({
+    currentStep: Math.max(state.currentStep - 1, 1)
+  })),
 }));

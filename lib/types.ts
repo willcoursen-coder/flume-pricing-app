@@ -45,6 +45,7 @@ export interface PricingInputs {
   largeTrades: number;
   dbReplication: number;
   hasDiscovery: boolean;
+  automationEnabled: boolean; // Reduces implementation hours by 50%
 
   // Settings
   cdcTimeline: number;

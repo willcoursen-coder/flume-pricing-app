@@ -285,6 +285,7 @@ export const defaultInputs: import('./types').PricingInputs = {
   largeTrades: 3,
   dbReplication: 0,
   hasDiscovery: true,
+  automationEnabled: false,
 
   // Settings
   cdcTimeline: 0,

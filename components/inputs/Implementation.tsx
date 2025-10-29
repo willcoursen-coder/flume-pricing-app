@@ -109,6 +109,39 @@ export function Implementation() {
             No Discovery
           </button>
         </div>
+
+        {/* Automation Toggle */}
+        <div className="pt-4 border-t border-gray-200">
+          <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <div className="text-xs font-semibold text-green-900">
+                  AI-Powered Automation
+                </div>
+                <div className="text-xs text-green-700 mt-1">
+                  Reduces implementation time by 50% using automated mapping and code generation
+                </div>
+              </div>
+              <button
+                onClick={() => updateInput('automationEnabled', !inputs.automationEnabled)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  inputs.automationEnabled ? 'bg-green-600' : 'bg-gray-300'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    inputs.automationEnabled ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+            {inputs.automationEnabled && (
+              <div className="text-xs text-green-800 mt-2 font-medium">
+                ✓ Automation enabled - Hours reduced by 50%
+              </div>
+            )}
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
