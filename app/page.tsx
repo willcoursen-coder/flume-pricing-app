@@ -1,8 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { usePricingStore } from '@/lib/store';
-import { Stepper } from '@/components/ui/Stepper';
 import { CustomerProfile } from '@/components/inputs/CustomerProfile';
 import { VolumeDrivers } from '@/components/inputs/VolumeDrivers';
 import { Implementation } from '@/components/inputs/Implementation';
@@ -16,8 +14,9 @@ import { EffortBreakdown } from '@/components/tables/EffortBreakdown';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'fiveyear' | 'domains' | 'effort'>('effort');
-  const { currentStep, nextStep, prevStep } = usePricingStore();
+  const [activeTab, setActiveTab] = useState<'fiveyear' | 'domains' | 'effort'>(
+    'fiveyear'
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -42,118 +41,72 @@ export default function Home() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        {/* Stepper */}
-        <Stepper />
-
-        {/* Two Column Layout: Inputs on left, Results on right */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Step Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Step 1: Customer Profile */}
-            {currentStep === 1 && (
-              <div className="space-y-4">
-                <CustomerProfile />
-              </div>
-            )}
-
-            {/* Step 2: Implementation Scope */}
-            {currentStep === 2 && (
-              <div className="space-y-4">
-                <Implementation />
-
-                {/* Show effort breakdown for this step */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Resourcing Estimate</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <EffortBreakdown />
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-
-            {/* Step 3: Volume Drivers */}
-            {currentStep === 3 && (
-              <div className="space-y-4">
-                <VolumeDrivers />
-              </div>
-            )}
-
-            {/* Step 4: Architecture & Settings */}
-            {currentStep === 4 && (
-              <div className="space-y-4">
-                <Settings />
-                <AdvancedControls />
-
-                {/* Show domain volumes for this step */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Data Volume Breakdown</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <DomainVolumes />
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-
-            {/* Step 5: Pricing & Margins */}
-            {currentStep === 5 && (
-              <div className="space-y-4">
-                <MarginControls />
-
-                {/* Show 5-year analysis for this step */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>5-Year Financial Projection</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <FiveYearPL />
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-
-            {/* Navigation Buttons */}
-            <div className="flex justify-between items-center pt-4">
-              <button
-                onClick={prevStep}
-                disabled={currentStep === 1}
-                className={`px-6 py-2 text-sm font-medium rounded-md transition-colors ${
-                  currentStep === 1
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                }`}
-              >
-                ← Back
-              </button>
-
-              <div className="text-xs text-gray-500">
-                Step {currentStep} of 5
-              </div>
-
-              <button
-                onClick={nextStep}
-                disabled={currentStep === 5}
-                className={`px-6 py-2 text-sm font-medium rounded-md transition-colors ${
-                  currentStep === 5
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
-                }`}
-              >
-                {currentStep === 5 ? 'Complete' : 'Next →'}
-              </button>
-            </div>
-          </div>
-
-          {/* Right Column - Pricing Summary (Sticky) */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-6">
-              <PricingSummary />
-            </div>
-          </div>
+        {/* Input Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <CustomerProfile />
+          <VolumeDrivers />
+          <Implementation />
+          <Settings />
         </div>
+
+        {/* Margin & Advanced Controls */}
+        <MarginControls />
+        <AdvancedControls />
+
+        {/* Pricing Summary */}
+        <PricingSummary />
+
+        {/* Tabbed Tables */}
+        <Card className="col-span-full">
+          <CardHeader>
+            <div className="flex gap-6 border-b border-gray-200 -mb-3">
+              <button
+                onClick={() => setActiveTab('fiveyear')}
+                className={`pb-3 px-1 text-xs font-medium transition-colors relative ${
+                  activeTab === 'fiveyear'
+                    ? 'text-blue-600'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                5-Year Analysis
+                {activeTab === 'fiveyear' && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
+                )}
+              </button>
+              <button
+                onClick={() => setActiveTab('domains')}
+                className={`pb-3 px-1 text-xs font-medium transition-colors relative ${
+                  activeTab === 'domains'
+                    ? 'text-blue-600'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Domain Volumes
+                {activeTab === 'domains' && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
+                )}
+              </button>
+              <button
+                onClick={() => setActiveTab('effort')}
+                className={`pb-3 px-1 text-xs font-medium transition-colors relative ${
+                  activeTab === 'effort'
+                    ? 'text-blue-600'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Effort Breakdown
+                {activeTab === 'effort' && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
+                )}
+              </button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {activeTab === 'fiveyear' && <FiveYearPL />}
+            {activeTab === 'domains' && <DomainVolumes />}
+            {activeTab === 'effort' && <EffortBreakdown />}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
