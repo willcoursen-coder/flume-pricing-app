@@ -4,7 +4,19 @@ import { usePricingStore } from '@/lib/store';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/Card';
 
 export function Implementation() {
-  const { inputs, updateInput } = usePricingStore();
+  const { inputs, updateInput, results } = usePricingStore();
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
+
+  const totalWeeks = results.implementation.totalHours / 40;
+  const calendarWeeks = totalWeeks / 2; // Assuming 2 FTEs working in parallel
 
   return (
     <Card>
@@ -87,28 +99,46 @@ export function Implementation() {
           />
         </div>
 
-        <div className="flex gap-2 pt-2">
-          <button
-            onClick={() => updateInput('hasDiscovery', true)}
-            className={`flex-1 px-3 py-2 text-xs font-medium rounded-md transition-colors ${
-              inputs.hasDiscovery
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
+        {/* Discovery Type Selector */}
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">
+            Deployment Type
+          </label>
+          <select
+            value={inputs.discoveryType}
+            onChange={(e) => {
+              const newType = e.target.value as 'none' | 'standard' | 'strategic' | 'custom';
+              updateInput('discoveryType', newType);
+              // Sync hasDiscovery for backward compatibility
+              updateInput('hasDiscovery', newType !== 'none');
+            }}
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
-            Discovery
-          </button>
-          <button
-            onClick={() => updateInput('hasDiscovery', false)}
-            className={`flex-1 px-3 py-2 text-xs font-medium rounded-md transition-colors ${
-              !inputs.hasDiscovery
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            No Discovery
-          </button>
+            <option value="none">None</option>
+            <option value="standard">Standard Deployment (200 hrs - $85K)</option>
+            <option value="strategic">Strategic Deployment (400 hrs - $170K)</option>
+            <option value="custom">Custom (set hours)</option>
+          </select>
         </div>
+
+        {/* Custom Deployment Hours */}
+        {inputs.discoveryType === 'custom' && (
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              Custom Deployment Hours
+            </label>
+            <input
+              type="number"
+              value={inputs.discoveryHours}
+              onChange={(e) => updateInput('discoveryHours', parseInt(e.target.value) || 0)}
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter hours"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Will be priced at loaded cost + margin
+            </p>
+          </div>
+        )}
 
         {/* Automation Toggle */}
         <div className="pt-4 border-t border-gray-200">
@@ -140,6 +170,43 @@ export function Implementation() {
                 ✓ Automation enabled - Hours reduced by 50%
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Live Cost Preview */}
+        <div className="pt-4 border-t border-gray-200">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 space-y-2">
+            <div className="text-xs font-semibold text-blue-900 mb-2">
+              Implementation Summary
+            </div>
+
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-blue-700">Total Cost (to Customer)</span>
+              <span className="text-sm font-bold text-blue-900">
+                {formatCurrency(results.implementation.totalRevenue)}
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-blue-700">Total Effort</span>
+              <span className="text-xs font-semibold text-blue-900">
+                {results.implementation.totalHours.toFixed(0)} hrs = {totalWeeks.toFixed(1)} weeks
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-blue-700">Timeline (2 FTEs)</span>
+              <span className="text-xs font-semibold text-blue-900">
+                ~{calendarWeeks.toFixed(1)} weeks ({(calendarWeeks / 4.33).toFixed(1)} months)
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center pt-2 border-t border-blue-200">
+              <span className="text-xs text-blue-700">Margin</span>
+              <span className="text-xs font-bold text-green-600">
+                {formatCurrency(results.implementation.margin)} ({((results.implementation.margin / results.implementation.totalRevenue) * 100).toFixed(1)}%)
+              </span>
+            </div>
           </div>
         </div>
       </CardContent>

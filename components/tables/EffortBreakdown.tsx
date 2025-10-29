@@ -22,12 +22,27 @@ export function EffortBreakdown() {
   // Hours per FTE week (standard 40 hour work week)
   const hoursPerWeek = 40;
 
+  // Calculate discovery hours based on type
+  const getDiscoveryHours = () => {
+    if (inputs.discoveryType === 'standard') return 200;
+    if (inputs.discoveryType === 'strategic') return 400;
+    if (inputs.discoveryType === 'custom') return inputs.discoveryHours;
+    return 0;
+  };
+
+  const getDiscoveryDescription = () => {
+    if (inputs.discoveryType === 'standard') return 'Standard data profiling, mapping workshops, architecture design';
+    if (inputs.discoveryType === 'strategic') return 'Strategic deployment, deep technical design, change management';
+    if (inputs.discoveryType === 'custom') return `Custom deployment engagement (${inputs.discoveryHours} hours)`;
+    return '';
+  };
+
   const efforts = [
     {
-      component: 'Discovery Phase',
-      count: inputs.hasDiscovery ? 1 : 0,
-      hoursEach: 200,
-      description: 'Data profiling, mapping workshops, architecture design',
+      component: inputs.discoveryType === 'strategic' ? 'Strategic Deployment' : inputs.discoveryType === 'standard' ? 'Standard Deployment' : 'Custom Deployment',
+      count: inputs.discoveryType !== 'none' ? 1 : 0,
+      hoursEach: getDiscoveryHours(),
+      description: getDiscoveryDescription(),
       isOptional: true,
     },
     {

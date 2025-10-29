@@ -4,14 +4,12 @@ import { usePricingStore } from '@/lib/store';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/Card';
 
 export function MarginControls() {
-  const { inputs, updateInput, showMargins } = usePricingStore();
-
-  if (!showMargins) return null;
+  const { inputs, updateInput } = usePricingStore();
 
   return (
     <Card className="col-span-full">
       <CardHeader>
-        <CardTitle>Internal Margin Controls</CardTitle>
+        <CardTitle>Pricing & Margins</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-4 gap-4">

@@ -285,7 +285,14 @@ export const defaultInputs: import('./types').PricingInputs = {
   largeTrades: 3,
   dbReplication: 0,
   hasDiscovery: true,
+  discoveryType: 'standard',
+  discoveryHours: 200,
   automationEnabled: false,
+
+  // Custom Trade Pricing
+  smallTradeCost: 3800,
+  mediumTradeCost: 10300,
+  largeTradeCost: 16840,
 
   // Settings
   cdcTimeline: 0,

@@ -108,6 +108,50 @@ export function AdvancedControls() {
           </div>
         </div>
           </div>
+
+          {/* Custom Trade Pricing */}
+          <div className="border-t border-gray-200 pt-4">
+            <label className="block text-xs font-medium text-gray-700 mb-3">
+              Custom Trade Pricing (Override Defaults)
+            </label>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Small Trade Cost
+                </label>
+                <FormattedNumberInput
+                  value={inputs.smallTradeCost}
+                  onChange={(value) => updateInput('smallTradeCost', Math.round(value))}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <p className="text-xs text-gray-500 mt-1">Default: $3,800 (40 hrs)</p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Medium Trade Cost
+                </label>
+                <FormattedNumberInput
+                  value={inputs.mediumTradeCost}
+                  onChange={(value) => updateInput('mediumTradeCost', Math.round(value))}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <p className="text-xs text-gray-500 mt-1">Default: $10,300 (120 hrs)</p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Large Trade Cost
+                </label>
+                <FormattedNumberInput
+                  value={inputs.largeTradeCost}
+                  onChange={(value) => updateInput('largeTradeCost', Math.round(value))}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <p className="text-xs text-gray-500 mt-1">Default: $16,840 (240 hrs)</p>
+              </div>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

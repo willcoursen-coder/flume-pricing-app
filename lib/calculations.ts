@@ -138,13 +138,31 @@ export function calculateMonthlyRows(
 export function calculateImplementationCost(
   inputs: PricingInputs
 ): ImplementationCost {
+  // Use custom trade costs
   const tradeCosts =
-    inputs.smallTrades * 3800 +
-    inputs.mediumTrades * 10300 +
-    inputs.largeTrades * 16840;
+    inputs.smallTrades * inputs.smallTradeCost +
+    inputs.mediumTrades * inputs.mediumTradeCost +
+    inputs.largeTrades * inputs.largeTradeCost;
 
   const dbReplicationCost = inputs.dbReplication * 45000;
-  const discoveryCost = inputs.hasDiscovery ? 85000 : 0;
+
+  // Calculate discovery cost based on type
+  let discoveryCost = 0;
+  let discoveryHours = 0;
+
+  if (inputs.discoveryType === 'standard') {
+    discoveryHours = 200;
+    discoveryCost = 85000;
+  } else if (inputs.discoveryType === 'strategic') {
+    discoveryHours = 400;
+    discoveryCost = 170000;
+  } else if (inputs.discoveryType === 'custom') {
+    discoveryHours = inputs.discoveryHours;
+    // Calculate cost based on hours at loaded rate with standard margin
+    const internalCost = discoveryHours * inputs.loadedCostPerHour;
+    discoveryCost = internalCost * (1 + inputs.implMargin / 100);
+  }
+
   const totalRevenue = tradeCosts + dbReplicationCost + discoveryCost;
 
   // Calculate base hours
@@ -153,7 +171,7 @@ export function calculateImplementationCost(
     inputs.mediumTrades * 120 +
     inputs.largeTrades * 240 +
     inputs.dbReplication * 80 +
-    (inputs.hasDiscovery ? 200 : 0);
+    discoveryHours;
 
   // Apply automation reduction (50% if enabled)
   const automationMultiplier = inputs.automationEnabled ? 0.5 : 1.0;

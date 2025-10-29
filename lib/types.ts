@@ -45,7 +45,14 @@ export interface PricingInputs {
   largeTrades: number;
   dbReplication: number;
   hasDiscovery: boolean;
+  discoveryType: 'none' | 'standard' | 'strategic' | 'custom';
+  discoveryHours: number; // For custom discovery
   automationEnabled: boolean; // Reduces implementation hours by 50%
+
+  // Custom Trade Pricing
+  smallTradeCost: number;
+  mediumTradeCost: number;
+  largeTradeCost: number;
 
   // Settings
   cdcTimeline: number;
