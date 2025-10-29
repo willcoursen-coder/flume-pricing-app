@@ -201,6 +201,38 @@ export function DomainVolumes() {
               -
             </td>
           </tr>
+
+          {/* Pipeline Multiplier Section */}
+          <tr className="bg-gray-100">
+            <td
+              colSpan={8}
+              className="py-2 px-3 font-semibold text-gray-700 text-xs pt-4"
+            >
+              ETL PIPELINE IMPACT
+            </td>
+          </tr>
+          <tr className="border-b border-gray-100 hover:bg-gray-50">
+            <td className="py-2 px-3 text-gray-900" colSpan={5}>
+              Pipeline Multiplier ({inputs.pipelineMultiplier}x staging layers)
+            </td>
+            <td className="py-2 px-3 text-right text-gray-900">
+              Raw → Bronze → Silver → Gold
+            </td>
+            <td className="py-2 px-3 text-center text-gray-900" colSpan={2}>
+              {inputs.pipelineMultiplier}x
+            </td>
+          </tr>
+          <tr className="border-t-2 border-gray-300 bg-blue-50 font-bold">
+            <td className="py-2 px-3 text-gray-900" colSpan={5}>
+              TOTAL MONTHLY ROWS (Final)
+            </td>
+            <td className="py-2 px-3 text-right text-blue-600 font-bold text-lg">
+              {formatNumber(results.monthlyRows)}
+            </td>
+            <td className="py-2 px-3 text-center text-gray-900" colSpan={2}>
+              = {Math.round(results.monthlyRows / 1000000)}M
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
